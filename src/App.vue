@@ -6,7 +6,7 @@
       <div class="game">
         <div class="game-field">
           <div @click="registerClick"
-               :class="{'disabled': !status}"
+               :class="{'disabled': !active}"
                class="field">
             <div
               class="button blue"
@@ -36,21 +36,21 @@
                 <span>Easy</span>
                 <input type="radio"
                        value="easy"
-                       :disabled= "status"
+                       :disabled= "active"
                        v-model="difficulty">
               </label >
               <label class="settings-radio__label">
                 <span>Normal</span>
                 <input type="radio"
                        value="normal"
-                       :disabled= "status"
+                       :disabled= "active"
                        v-model="difficulty">
               </label>
               <label class="settings-radio__label">
                 <span>Hard</span>
                 <input type="radio"
                        value="hard"
-                       :disabled= "status"
+                       :disabled= "active"
                        v-model="difficulty">
               </label>
             </div>
@@ -58,7 +58,7 @@
           <div>
             <button
               @click="startButtonHandler"
-              class="start-button">{{ !status ? "Start" : "Stop"}}</button>
+              class="start-button">{{ !active ? "Start" : "Stop" }}</button>
           </div>
         </div>
       </div>
@@ -79,9 +79,8 @@ export default {
   data () {
     return {
       difficulty: 'normal',
-      playersPattern: [],
-      round: 0,
-      status: false
+      active: false,
+      round: 0
     }
   },
   created () {
@@ -91,26 +90,34 @@ export default {
   methods: {
     // Starts and end the game with button
     startButtonHandler () {
-      if (this.status) {
+      if (this.active) {
+        this.active = false
         game.gameEnd()
+        this.round = game.Results.round
       } else {
+        this.active = true
         game.gameStart()
+        this.round = game.Results.round
       }
-      this.status = game.status
     },
     // Send click to game
     registerClick (event) {
-      if (this.status && event.target.dataset.color) {
+      if (this.active && event.target.dataset.color) {
         const color = event.target.dataset.color
-        game.playerInput(color)
+        game.checkInput(color)
         playSound(color)
+        this.active = game.Results.active
+        this.round = game.Results.round
       }
+    },
+    animatePattern () {
+
     }
   },
   watch: {
     // Tell the game about difficulty change
     difficulty () {
-      if (!this.status) {
+      if (!this.active) {
         game.difficultyChanger(this.difficulty)
       }
     }
