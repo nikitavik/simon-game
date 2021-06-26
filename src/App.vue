@@ -9,18 +9,22 @@
                :class="{'disabled': !active}"
                class="field">
             <div
+              ref="blue"
               class="button blue"
               data-color="blue"
             ></div>
             <div
+              ref="red"
               class="button red"
               data-color="red"
             ></div>
             <div
+              ref="yellow"
               class="button yellow"
               data-color="yellow"
             ></div>
             <div
+              ref="green"
               class="button green"
               data-color="green"
             ></div>
@@ -65,14 +69,16 @@
       <div class="footer">
         <div class="footer-text">Created by <a href="https://github.com/nikitavik">Nikita Kornilov</a></div>
       </div>
+      <div class="scoreboard">
+      </div>
     </div>
   </div>
 </template>
 
 <script>
 
-import { game } from './game-api'
 import { playSound } from './audio-api'
+import { getScores, postScores } from './api'
 
 export default {
   name: 'App',
@@ -80,46 +86,100 @@ export default {
     return {
       difficulty: 'normal',
       active: false,
+      pattern: [],
       round: 0
     }
   },
   created () {
-  },
-  computed () {
+    window.p = postScores
+    window.g = getScores
   },
   methods: {
     // Starts and end the game with button
     startButtonHandler () {
-      if (this.active) {
-        this.active = false
-        game.gameEnd()
-        this.round = game.Results.round
+      if (!this.active) {
+        this.gameStart()
       } else {
-        this.active = true
-        game.gameStart()
-        this.round = game.Results.round
+        this.gameEnd()
       }
+    },
+    // Function that plays pattern for each round
+    async playPattern (pattern, difficulty) {
+      let TIME = 1000
+      if (difficulty === 'easy') { TIME = 1500 }
+      if (difficulty === 'hard') { TIME = 400 }
+      for (const item of this.sequence) {
+        await new Promise(resolve => setTimeout(() => {
+          resolve()
+        }, TIME))
+        item.cb()
+        this.animateColor(item.colorName, TIME)
+      }
+    },
+    // Game Starter
+    gameStart () {
+      console.warn(`Game: STARTED with difficulty ${this.difficulty.toUpperCase()} and pattern ${this.sequence}`)
+      this.active = true
+      this.sequence = []
+      this.round = 0
+      this.newRound()
+    },
+    // Game End
+    gameEnd () {
+      console.warn(`Game: ENDED with difficulty ${this.difficulty.toUpperCase()} and pattern ${this.sequence}`)
+      this.active = false
+    },
+    // New round generator
+    newRound () {
+      this.round = this.round + 1
+      this.addNewColor(this.randomColor())
+      this.playPattern(this.pattern, this.difficulty)
+      this.copy = this.sequence.slice(0)
     },
     // Send click to game
     registerClick (event) {
       if (this.active && event.target.dataset.color) {
         const color = event.target.dataset.color
-        game.checkInput(color)
+        this.checkInput(color)
+        this.animateColor(color)
         playSound(color)
-        this.active = game.Results.active
-        this.round = game.Results.round
       }
     },
-    animatePattern () {
-
-    }
-  },
-  watch: {
-    // Tell the game about difficulty change
-    difficulty () {
-      if (!this.active) {
-        game.difficultyChanger(this.difficulty)
+    // Animate colors with Timeout
+    animateColor (color, time) {
+      const activeColor = this.$refs[color]
+      activeColor.classList.add('active')
+      setTimeout(() => { activeColor.classList.remove('active') }, time)
+    },
+    // Pushes new color to sequence
+    addNewColor (colorName) {
+      const newColor = {
+        colorName: colorName,
+        cb () {
+          playSound(colorName)
+        }
       }
+      this.sequence.push(newColor)
+    },
+    // Check input with sequence
+    checkInput (color) {
+      const targetColor = this.copy.shift()
+      this.active = (targetColor.colorName === color)
+      this.checkLose()
+    },
+    // Check if input was right
+    checkLose () {
+      if (this.copy.length === 0 && this.active) {
+        this.newRound()
+      } else if (!this.active) {
+        this.gameEnd()
+      }
+    },
+    // Generate new random color name
+    randomColor () {
+      const seed = Math.floor((Math.random() * 4))
+      const colors = ['yellow', 'blue', 'red', 'green']
+      return colors[seed]
     }
   }
 }
@@ -185,7 +245,7 @@ input{
 .disabled{
   opacity: .1
 }
-.button:hover{
+.button.active{
   opacity: 1;
   border: 4px solid black;
 }
@@ -210,9 +270,6 @@ input{
   box-sizing: border-box;
   margin: 0;
   padding: 0;
-}
-body{
-  font-family: Arial, Verdana, sans-serif;
 }
 .container{
   width: 100%;
