@@ -29,7 +29,16 @@
               data-color="green"
             ></div>
           </div>
-          <div class="game-notify">Sorry. You have failed :(</div>
+          <div
+            v-if="!active && round !==0 "
+            class="game-notify">
+            Sorry. You have failed :(
+            Save Results?
+            <button
+              v-if="!active && round !== 0"
+              @click="saveResult"
+              class="start-button">Save Results</button>
+          </div>
         </div>
         <div class="game-settings">
           <div class="settings">
@@ -66,10 +75,9 @@
           </div>
         </div>
       </div>
+      <game-scoreboard></game-scoreboard>
       <div class="footer">
         <div class="footer-text">Created by <a href="https://github.com/nikitavik">Nikita Kornilov</a></div>
-      </div>
-      <div class="scoreboard">
       </div>
     </div>
   </div>
@@ -79,9 +87,12 @@
 
 import { playSound } from './audio-api'
 import { getScores, postScores } from './api'
-
+import GameScoreboard from './components/game-scoreboard'
 export default {
   name: 'App',
+  components: {
+    'game-scoreboard': GameScoreboard
+  },
   data () {
     return {
       difficulty: 'normal',
@@ -180,6 +191,13 @@ export default {
       const seed = Math.floor((Math.random() * 4))
       const colors = ['yellow', 'blue', 'red', 'green']
       return colors[seed]
+    },
+    saveResult () {
+      const name = prompt('Tell me your name, please!')
+      postScores(name, this.round, this.difficulty).then(() => {
+        alert('Successfully saved')
+      }
+      )
     }
   }
 }
@@ -284,6 +302,7 @@ input{
 }
 .game-notify{
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
   margin: 1rem;
