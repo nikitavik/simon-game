@@ -1,6 +1,8 @@
 # This app is in development
 # simon-game
 
+
+### Hoster version on https://nikitavik.github.io/simon-test-deploy/
 ## Project setup
 ```
 npm install
