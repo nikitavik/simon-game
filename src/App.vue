@@ -41,41 +41,17 @@
           </div>
         </div>
         <div class="game-settings">
-          <div class="settings">
-            <h2 class="settings-title">Game Options</h2>
-            <div class="settings-radio">
-              <h3 class="settings-radio__title">Difficulty</h3>
-              <label class="settings-radio__label">
-                <span>Easy</span>
-                <input type="radio"
-                       value="easy"
-                       :disabled= "active"
-                       v-model="difficulty">
-              </label >
-              <label class="settings-radio__label">
-                <span>Normal</span>
-                <input type="radio"
-                       value="normal"
-                       :disabled= "active"
-                       v-model="difficulty">
-              </label>
-              <label class="settings-radio__label">
-                <span>Hard</span>
-                <input type="radio"
-                       value="hard"
-                       :disabled= "active"
-                       v-model="difficulty">
-              </label>
-            </div>
-          </div>
-          <div>
-            <button
-              @click="startButtonHandler"
-              class="start-button">{{ !active ? "Start" : "Stop" }}</button>
-          </div>
+          <game-settings
+            :active = "active"
+            @change-difficulty = "($difficulty) => this.difficulty = $difficulty"
+          />
+          <start-button
+            :active = "active"
+            @click-start = "startButtonHandler"
+          />
         </div>
       </div>
-      <game-scoreboard></game-scoreboard>
+      <game-scoreboard />
       <div class="footer">
         <div class="footer-text">Created by <a href="https://github.com/nikitavik">Nikita Kornilov</a></div>
       </div>
@@ -87,11 +63,15 @@
 
 import { playSound } from './audio-api'
 import { getScores, postScores } from './api'
-import GameScoreboard from './components/game-scoreboard'
+import GameScoreboard from './components/GameScoreboard'
+import StartButton from './components/StartButton'
+import GameSettings from './components/GameSettings'
 export default {
   name: 'App',
   components: {
-    'game-scoreboard': GameScoreboard
+    GameSettings,
+    StartButton,
+    GameScoreboard
   },
   data () {
     return {
@@ -212,36 +192,7 @@ export default {
   color: #2c3e50;
   margin-top: 60px;
 }
-/*Start Button*/
-.start-button{
-  padding: 1rem 4rem;
-  border: 2px solid black;
-  background-color: lightcoral;
-  cursor: pointer;
-}
-/*Settings*/
-.settings-radio{
-  display: flex;
-  flex-flow: column nowrap;
-}
-.settings-title{
-  font-size: 2rem;
-}
-.settings-radio__title{
-  margin: .6rem 0;
-  font-size: 1.2rem;
-}
-.settings-radio__label{
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  max-width: 5rem;
-  margin: .3rem 0;
-  padding: .2rem;
 
-  cursor: pointer;
-  border: 2px solid dimgrey;
-}
 input{
   cursor: pointer;
 }
