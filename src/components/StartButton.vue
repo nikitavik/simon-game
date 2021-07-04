@@ -2,7 +2,7 @@
   <div>
     <button
       @click="$emit('click-start')"
-      class="start-button">{{ !active ? "Start" : "Stop" }}</button>
+      class="main-button">{{ !active ? "Start" : "Stop" }}</button>
   </div>
 </template>
 
@@ -24,7 +24,7 @@ export default {
 
 <style scoped>
 /*Start Button*/
-.start-button{
+.main-button{
   padding: 1rem 4rem;
   border: 2px solid black;
   background-color: lightcoral;
