@@ -2,7 +2,7 @@
   <div>
     <button
       @click="$emit('click-start')"
-      class="main-button">{{ !active ? "Start" : "Stop" }}</button>
+      class="main-button">{{ active ? 'Stop' : 'Start' }}</button>
   </div>
 </template>
 
@@ -15,8 +15,7 @@ export default {
   props: {
     active: {
       type: Boolean,
-      required: true,
-      default: false
+      required: true
     }
   }
 }

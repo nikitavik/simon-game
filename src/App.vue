@@ -38,6 +38,12 @@
 </template>
 
 <script>
+// TODO block gameBoard on pattern playing
+// TODO fix sounds and animation
+// TODO make game style better
+// TODO change Scoreboard to a modal window
+// TODO Sort the scoreboard and add filters
+
 import GameScoreboard from './components/GameScoreboard'
 import GameSettings from './components/GameSettings'
 import GameField from './components/GameField'

@@ -43,19 +43,18 @@ export default {
   },
   data () {
     return {
-      pattern: []
+      pattern: [],
+      copyPattern: []
     }
   },
   props: {
     active: {
       type: Boolean,
-      required: true,
-      default: false
+      required: true
     },
     difficulty: {
       type: String,
-      required: true,
-      default: 'normal'
+      required: true
     }
   },
   emits: {
@@ -67,24 +66,24 @@ export default {
     // Starts and end the game with button
     startButtonHandler () {
       if (!this.active) {
-        this.gameStart()
+        this.startGame()
       } else {
-        this.gameEnd()
+        this.endGame()
       }
     },
     // Game Start
-    gameStart () {
+    startGame () {
       this.$emit('game-start')
       this.pattern = []
-      this.nextRound()
+      this.startNextRound()
     },
     // Game End
-    gameEnd () {
+    endGame () {
       this.$emit('game-end')
     },
     // New round
-    nextRound () {
-      this.addNewColor(this.randomColor())
+    startNextRound () {
+      this.addNewColor(this.getRandomColor())
       this.playPattern(this.pattern, this.difficulty)
       this.copyPattern = this.pattern.slice(0)
       this.$emit('next-round')
@@ -114,9 +113,9 @@ export default {
     // Check if input was right
     checkLose (check) {
       if (this.copyPattern.length === 0 && check) {
-        setTimeout(() => { this.nextRound() }, 400)
+        setTimeout(() => { this.startNextRound() }, 400)
       } else if (!check) {
-        this.gameEnd()
+        this.endGame()
       }
     },
     // Pushes new color to pattern
@@ -141,7 +140,7 @@ export default {
       }
     },
     // Generate new random color name
-    randomColor () {
+    getRandomColor () {
       const seed = Math.floor((Math.random() * 4))
       const colors = ['yellow', 'blue', 'red', 'green']
       return colors[seed]

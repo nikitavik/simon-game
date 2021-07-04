@@ -3,7 +3,6 @@
     Sorry. You have failed :( <br>
     Save Results?
     <button
-      v-if="!active && round !== 0"
       @click="saveResult"
       class="main-button">Save Results</button>
   </div>
@@ -17,18 +16,15 @@ export default {
   props: {
     active: {
       type: Boolean,
-      required: true,
-      default: false
+      required: true
     },
     difficulty: {
       type: String,
-      required: true,
-      default: 'normal'
+      required: true
     },
     round: {
       type: Number,
-      required: true,
-      default: 0
+      required: true
     }
   },
   methods: {
