@@ -1,6 +1,7 @@
 # This app is in development
 # simon-game
 
+### You can see a hosted version on https://nikitavik.github.io/simon-test-deploy/
 
 ## Project setup
 ```
