@@ -36,6 +36,13 @@
 import { playSound } from '../audio-api'
 import StartButton from './StartButton'
 
+const TIME_ON_DIFFICULTY = {
+  easy: 400,
+  medium: 1000,
+  hard: 1500
+}
+const GAME_DELAY = 200
+
 export default {
   name: 'GameField',
   components: {
@@ -84,7 +91,7 @@ export default {
     // New round
     startNextRound () {
       this.addNewColor(this.getRandomColor())
-      this.playPattern(this.pattern, this.difficulty)
+      this.playPattern()
       this.copyPattern = this.pattern.slice(0)
       this.$emit('next-round')
       console.log(this.pattern)
@@ -94,7 +101,7 @@ export default {
       if (this.active && event.target.dataset.color) {
         const color = event.target.dataset.color
         this.checkInput(color)
-        this.animateColor(color, 200)
+        this.animateColor(color, GAME_DELAY)
         playSound(color)
       }
     },
@@ -113,7 +120,7 @@ export default {
     // Check if input was right
     checkLose (check) {
       if (this.copyPattern.length === 0 && check) {
-        setTimeout(() => { this.startNextRound() }, 400)
+        setTimeout(() => { this.startNextRound() }, GAME_DELAY * 2)
       } else if (!check) {
         this.endGame()
       }
@@ -127,16 +134,14 @@ export default {
       this.pattern.push(newColor)
     },
     // Function that plays pattern for each round
-    async playPattern (pattern, difficulty) {
-      let TIME = 1000
-      if (difficulty === 'easy') { TIME = 1500 }
-      if (difficulty === 'hard') { TIME = 400 }
+    async playPattern () {
+      const time = TIME_ON_DIFFICULTY[this.difficulty]
       for (const item of this.pattern) {
         await new Promise(resolve => setTimeout(() => {
           resolve()
-        }, TIME))
+        }, time))
         item.cb()
-        this.animateColor(item.colorName, TIME)
+        this.animateColor(item.colorName, time)
       }
     },
     // Generate new random color name
