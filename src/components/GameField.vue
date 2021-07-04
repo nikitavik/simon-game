@@ -25,6 +25,7 @@
       ></div>
     </div>
     <start-button
+      class="start-button"
       :active = "active"
       @click-start = "startButtonHandler"
     />
@@ -154,6 +155,9 @@ export default {
 .field{
   width: 100%;
   height: 100%;
+}
+.start-button{
+  margin-top: 1rem;
 }
 .button{
   opacity: .5;

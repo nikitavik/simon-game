@@ -1,5 +1,5 @@
 <template>
-  <div class="settings">
+  <div>
     <h2 class="settings-title">Game Options</h2>
     <div class="settings-radio">
       <h3 class="settings-radio__title">Difficulty</h3>

@@ -12,22 +12,24 @@
           @game-start = "onGameStart"
           @game-end = "onGameEnd"
         />
+      <div class="game-settings">
+        <game-settings
+          :active = "active"
+          @change-difficulty = "difficultyChangeHandler"
+        />
         <game-notification
           class="game-notification"
           :active = "active"
           :difficulty ="difficulty"
           :round = "round"
         />
-        <div class="game-settings">
-          <game-settings
-            :active = "active"
-            @change-difficulty = "difficultyChangeHandler"
-          />
-        </div>
       </div>
+      </div>
+<!--      Game Scoreboard-->
       <div class="game-scoreboard">
         <game-scoreboard />
       </div>
+<!--      App Footer-->
       <div class="footer">
         <div class="footer-text">Created by <a href="https://github.com/nikitavik">Nikita Kornilov</a></div>
       </div>
@@ -109,11 +111,12 @@ input{
   line-height: 120%;
 }
 .game-notification{
+  position: absolute;
+  width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  margin: 1rem;
 }
 .round-counter{
   display: flex;
@@ -126,6 +129,7 @@ input{
   margin: 1rem;
 }
 .game-settings{
+  position: relative;
   margin: 2rem 0;
 }
 .game{

@@ -1,8 +1,6 @@
 <template>
-  <div
-    v-if="!active && round !==0 "
-    class="game-notification">
-    Sorry. You have failed :(
+  <div v-if="!active && round !==0 ">
+    Sorry. You have failed :( <br>
     Save Results?
     <button
       v-if="!active && round !== 0"
@@ -48,7 +46,6 @@ export default {
 <style scoped>
 .main-button{
   padding: 1rem 4rem;
-  margin: 1rem;
   border: 2px solid black;
   background-color: lightcoral;
   cursor: pointer;
