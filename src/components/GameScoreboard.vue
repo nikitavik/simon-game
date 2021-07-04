@@ -2,7 +2,8 @@
   <button
       @click="scoreboardOpenHandler"
       class="open">
-    Open Scoreboard</button>
+  Open Scoreboard
+  </button>
   <table
     class="scoreboard"
     v-if="opened">
@@ -17,7 +18,8 @@
     </tr>
     <tr v-for="player in scores"
         :key = player.index
-        class="row">
+        class="row"
+    >
       <td class="header cell">
         {{ player.name }}</td>
       <td class="header cell">

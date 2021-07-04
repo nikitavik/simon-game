@@ -2,7 +2,8 @@
   <div>
     <button
       @click="$emit('click-start')"
-      class="main-button">{{ active ? 'Stop' : 'Start' }}</button>
+      class="main-button">{{ active ? 'Stop' : 'Start' }}
+    </button>
   </div>
 </template>
 

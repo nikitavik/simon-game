@@ -1,10 +1,15 @@
 <template>
-  <div v-if="!active && round !==0 ">
-    Sorry. You have failed :( <br>
+  <div
+    v-if="!active && round !==0 "
+  >
+    Sorry. You have failed :(
+    <br>
     Save Results?
     <button
       @click="saveResult"
-      class="main-button">Save Results</button>
+      class="main-button">
+    Save Results
+    </button>
   </div>
 </template>
 

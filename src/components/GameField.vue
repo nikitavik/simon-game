@@ -1,8 +1,10 @@
 <template>
   <div class="game-field">
-    <div @click="registerClick"
-         :class="{'disabled': !active}"
-         class="field">
+    <div
+      @click="registerClick"
+      :class="{'disabled': !active}"
+      class="field"
+    >
       <div
         ref="blue"
         class="button blue"

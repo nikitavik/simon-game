@@ -1,7 +1,7 @@
 const URL = 'https://simon-game-test-default-rtdb.europe-west1.firebasedatabase.app/scoreboard.json'
 export const getScores = async function () {
   const res = await fetch(URL)
-  return await res.json()
+  return res.json()
 }
 
 export const postScores = async function (name, round, difficulty) {

@@ -1,29 +1,41 @@
 <template>
   <div>
-    <h2 class="settings-title">Game Options</h2>
+    <h2 class="settings-title">
+      Game Options
+    </h2>
     <div class="settings-radio">
-      <h3 class="settings-radio__title">Difficulty</h3>
-      <form @change="$emit('change-difficulty', difficulty)">
+      <h3 class="settings-radio__title">
+        Difficulty
+      </h3>
+      <form
+        @change="$emit('change-difficulty', difficulty)"
+      >
         <label class="settings-radio__label">
           <span>Easy</span>
-          <input type="radio"
-                 value="easy"
-                 :disabled= "active"
-                 v-model="difficulty">
+          <input
+             type="radio"
+             value="easy"
+             :disabled= "active"
+             v-model="difficulty"
+          >
         </label >
         <label class="settings-radio__label">
           <span>Normal</span>
-          <input type="radio"
-                 value="normal"
-                 :disabled= "active"
-                 v-model="difficulty">
+          <input
+              type="radio"
+              value="normal"
+              :disabled= "active"
+              v-model="difficulty"
+          >
         </label>
         <label class="settings-radio__label">
           <span>Hard</span>
-          <input type="radio"
-                 value="hard"
-                 :disabled= "active"
-                 v-model="difficulty">
+          <input
+            type="radio"
+            value="hard"
+            :disabled= "active"
+            v-model="difficulty"
+          >
         </label>
       </form>
     </div>

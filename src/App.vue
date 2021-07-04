@@ -43,6 +43,7 @@
 // TODO make game style better
 // TODO change Scoreboard to a modal window
 // TODO Sort the scoreboard and add filters
+// TODO Rewrite play pattern function
 
 import GameScoreboard from './components/GameScoreboard'
 import GameSettings from './components/GameSettings'
