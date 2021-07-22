@@ -6,41 +6,43 @@
       class="field"
     >
       <div
-        ref="blue"
+        :class="{'active': activeColor === 'blue'}"
         class="button blue"
         data-color="blue"
       ></div>
       <div
-        ref="red"
+        :class="{'active': activeColor === 'red'}"
         class="button red"
         data-color="red"
       ></div>
       <div
-        ref="yellow"
+        :class="{'active': activeColor === 'yellow'}"
         class="button yellow"
         data-color="yellow"
       ></div>
       <div
-        ref="green"
+        :class="{'active': activeColor === 'green'}"
         class="button green"
         data-color="green"
       ></div>
     </div>
-    <start-button
+    <GameButton
       class="start-button"
       :active = "active"
-      @click-start = "startButtonHandler"
-    />
+      @button-action = "startButtonHandler"
+    >
+      <span>{{ !active ? "Start Game": "End Game"}}</span>
+    </GameButton>
   </div>
 </template>
 
 <script>
 import { playSound } from '../audio-api'
-import StartButton from './StartButton'
+import GameButton from './GameButton'
 
 const TIME_ON_DIFFICULTY = {
   easy: 400,
-  medium: 1000,
+  normal: 1000,
   hard: 1500
 }
 const GAME_DELAY = 200
@@ -48,12 +50,14 @@ const GAME_DELAY = 200
 export default {
   name: 'GameField',
   components: {
-    StartButton
+    GameButton
   },
   data () {
     return {
       pattern: [],
-      copyPattern: []
+      copyPattern: [],
+      activeColor: '',
+      blocked: false
     }
   },
   props: {
@@ -71,8 +75,13 @@ export default {
     'game-start': null,
     'game-end': null
   },
+  computed: {
+    canClick () {
+      return this.active && !this.blocked
+    }
+  },
   methods: {
-    // Starts and end the game with button
+    // Starts and end the game with a button
     startButtonHandler () {
       if (!this.active) {
         this.startGame()
@@ -100,18 +109,12 @@ export default {
     },
     // Register click
     registerClick (event) {
-      if (this.active && event.target.dataset.color) {
+      if (this.canClick && event.target.dataset.color) {
         const color = event.target.dataset.color
         this.checkInput(color)
-        this.animateColor(color, GAME_DELAY)
+        this.activeColor = color
         playSound(color)
       }
-    },
-    // Animate colors with Timeout
-    animateColor (color, time) {
-      const activeColor = this.$refs[color]
-      activeColor.classList.add('active')
-      setTimeout(() => { activeColor.classList.remove('active') }, time)
     },
     // Compare input with pattern
     checkInput (color) {
@@ -131,7 +134,7 @@ export default {
     addNewColor (colorName) {
       const newColor = {
         colorName: colorName,
-        cb () { playSound(colorName) }
+        colorSound () { playSound(colorName) }
       }
       this.pattern.push(newColor)
     },
@@ -140,11 +143,12 @@ export default {
       const time = TIME_ON_DIFFICULTY[this.difficulty]
       for (const item of this.pattern) {
         await new Promise(resolve => setTimeout(() => {
+          item.colorSound()
+          this.activeColor = item.colorName
           resolve()
         }, time))
-        item.cb()
-        this.animateColor(item.colorName, time)
       }
+      // TODO USE SET INTERVAL
     },
     // Generate new random color name
     getRandomColor () {

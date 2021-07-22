@@ -1,17 +1,18 @@
 <template>
   <div>
     <button
-      @click="$emit('click-start')"
-      class="main-button">{{ active ? 'Stop' : 'Start' }}
+      @click="$emit('button-action')"
+      class="main-button">
+      <slot></slot>
     </button>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'StartButton',
+  name: 'GameButton',
   emits: {
-    'click-start': null
+    'button-action': null
   },
   props: {
     active: {
@@ -29,5 +30,8 @@ export default {
   border: 2px solid black;
   background-color: lightcoral;
   cursor: pointer;
+}
+.main-button:hover{
+  box-shadow: inset 0 2px 2px rgba(0, 0, 0, 0.22);
 }
 </style>

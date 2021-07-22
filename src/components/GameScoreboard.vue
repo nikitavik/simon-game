@@ -1,9 +1,4 @@
 <template>
-  <button
-      @click="scoreboardOpenHandler"
-      class="open">
-  Open Scoreboard
-  </button>
   <table
     class="scoreboard"
     v-if="opened">
@@ -13,7 +8,7 @@
       <th class="header cell">Difficulty</th>
       <th class="header cell">Date</th>
       <th
-        @click = "scoreboardCloseHandler"
+        @click = "closeScoreboard"
         class="close">x</th>
     </tr>
     <tr v-for="player in scores"
@@ -42,28 +37,33 @@ export default {
   name: 'GameScoreboard',
   data () {
     return {
-      opened: false,
       scores: []
     }
   },
+  props: {
+    opened: {
+      type: Boolean,
+      required: true
+    }
+  },
+  emits: {
+    'close-scoreboard': null
+  },
   methods: {
-    scoreboardOpenHandler () {
-      if (!this.opened) {
-        this.opened = true
-        this.updateData()
-      }
-    },
-    scoreboardCloseHandler () {
-      this.opened = false
+    closeScoreboard () {
       this.scores = []
+      this.$emit('close-scoreboard')
     },
-    async updateData () {
+    async updateScores () {
       const scores = await getScores()
       for (const value of Object.values(scores)) {
         this.scores.push(value)
       }
       console.log(this.scores)
     }
+  },
+  mounted () {
+    // this.updateData()
   }
 }
 </script>
@@ -93,6 +93,7 @@ export default {
   display: flex;
   flex-direction: column;
   justify-content: center;
+  z-index: 100;
 }
 .cell{
   width: 100%;

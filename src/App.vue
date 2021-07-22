@@ -1,38 +1,48 @@
 <template>
-  <div id="app">
-    <div class="container">
-      <h1 class="game-title">Simon</h1>
-      <div class="round-counter">Round: {{ round }}</div>
-      <div class="game">
-        <game-field
-          class="game-field"
-          :difficulty = "difficulty"
-          :active = "active"
-          @next-round = "onNextRound"
-          @game-start = "onGameStart"
-          @game-end = "onGameEnd"
-        />
-      <div class="game-settings">
-        <game-settings
-          :active = "active"
-          @change-difficulty = "difficultyChangeHandler"
-        />
-        <game-notification
-          class="game-notification"
-          :active = "active"
-          :difficulty ="difficulty"
-          :round = "round"
-        />
-      </div>
-      </div>
-<!--      Game Scoreboard-->
-      <div class="game-scoreboard">
-        <game-scoreboard />
-      </div>
+<!--  Notifications and Scoreboard-->
+  <pop-up-modal>
+    <save-results
+      class="game-notification"
+      :active = "active"
+      :difficulty ="difficulty"
+      :round = "round"
+    />
+  </pop-up-modal>
+  <pop-up-modal
+    :opened= "scoreboard">
+    <div class="game-scoreboard">
+      <game-scoreboard :opened= "scoreboard" @close-scoreboard="closeScoreboard" />
+    </div>
+  </pop-up-modal>
+  <header class="header">
+    <game-button
+    class="scoreboard-button"
+    @button-action="openScoreboard"
+  ><span>Open Scoreboard</span>
+  </game-button>
+  </header>
+<!--  Main Game-->
+  <div class="container">
+    <h1 class="game-title">Simon</h1>
+    <span class="round-counter">Round: {{ round }}</span>
+    <div class="game">
+      <game-field
+        class="game-field"
+        :difficulty = "difficulty"
+        :active = "active"
+        @next-round = "onNextRound"
+        @game-start = "onGameStart"
+        @game-end = "onGameEnd"
+      />
+      <game-settings
+        class="game-settings"
+        :active = "active"
+        @change-difficulty = "changeDifficulty"
+      />
+    </div>
 <!--      App Footer-->
-      <div class="footer">
-        <div class="footer-text">Created by <a href="https://github.com/nikitavik">Nikita Kornilov</a></div>
-      </div>
+    <div class="footer">
+      <div class="footer-text">Created by <a href="https://github.com/nikitavik">Nikita Kornilov</a></div>
     </div>
   </div>
 </template>
@@ -48,39 +58,52 @@
 import GameScoreboard from './components/GameScoreboard'
 import GameSettings from './components/GameSettings'
 import GameField from './components/GameField'
-import GameNotification from './components/GameNotification'
+import SaveResults from './components/SaveResults'
+import PopUpModal from './components/PopUpModal'
+import GameButton from './components/GameButton'
 
 export default {
   name: 'App',
   components: {
-    GameNotification,
+    SaveResults,
     GameField,
     GameSettings,
-    GameScoreboard
+    GameScoreboard,
+    PopUpModal,
+    GameButton
   },
   data () {
     return {
       difficulty: 'normal',
       active: false,
-      round: 0
+      round: 0,
+      scoreboard: false
     }
   },
   methods: {
     // Game Starter
     onGameStart () {
-      console.warn(`Game: STARTED with difficulty ${this.difficulty.toUpperCase()}`)
+      console.log(`Game: STARTED with difficulty ${this.difficulty.toUpperCase()}`)
       this.round = 0
       this.active = true
     },
     onGameEnd () {
-      console.warn(`Game: ENDED with difficulty ${this.difficulty.toUpperCase()}`)
+      console.log(`Game: ENDED with difficulty ${this.difficulty.toUpperCase()}`)
       this.active = false
     },
     onNextRound () {
       this.round = this.round + 1
     },
-    difficultyChangeHandler (difficulty) {
+    // Difficulty Changer
+    changeDifficulty (difficulty) {
       this.difficulty = difficulty
+    },
+    // Scoreboard Open/Close
+    openScoreboard () {
+      this.scoreboard = true
+    },
+    closeScoreboard () {
+      this.scoreboard = false
     }
   }
 }
@@ -93,7 +116,7 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  margin-top: 60px;
+  height: 100vh;
 }
 
 input{
@@ -108,22 +131,20 @@ input{
 }
 .container{
   width: 100%;
-  height: 100vh;
+  height: 100%;
+}
+.header {
+  display: flex;
+  justify-content: flex-start;
+}
+.scoreboard-button{
+  margin: 1rem;
 }
 .game-title{
   display: flex;
   justify-content: center;
-  padding: 1rem 0;
   font-size: 3rem;
   line-height: 120%;
-}
-.game-notification{
-  position: absolute;
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
 }
 .round-counter{
   display: flex;
@@ -136,12 +157,10 @@ input{
   margin: 1rem;
 }
 .game-settings{
-  position: relative;
   margin: 2rem 0;
 }
 .game{
   display: flex;
-  flex-flow: row wrap;
   justify-content: space-around;
 }
 .footer{
